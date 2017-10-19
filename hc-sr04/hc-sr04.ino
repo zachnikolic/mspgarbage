@@ -1,15 +1,10 @@
 //Sean Flaherty
-//Program is pretty simple. Just sends a 10 uS pulse to output to ultrasonic sensor.
-//
-//when button is pressed, start timer countup and enable output pin.
-//when timer reaches countup.
+//Ultrasonic Sensor module
+//On a signal from P1.3 (push button or external), sends a ~10uS pulse to P1.1 (trigger) on the ultrasonic sensor
+//The MCU then waits for a rising edge on the echo input (P1.4, P1.2) and sets a timer capture/compare block to capture on falling edge.
+//The falling edge on P1.2 will cause the capture interrupt.
+//Distance of an object from the sensor can be calculated using the pulse width recorded by the capture.
 
-//Next steps for the program: use timer A1 with an input pin to measure the pulse width output of the sensor's echo pin.  
-//note for future: a timer for trigger pulse interval, echo pulse measurement, and trigger pulse duration is three timers, and might make the code more cluttered. In order to avoid this, consider using one-shot 555 timers to free up timer blocks on the MCU.
-
-//The G2553 has no Timer B, but two Timer A units with 3 CCR blocks each.
-//The plan is to use Timer A0 for sensor, Timer A1 for servo multiplexing.
-unsigned int echo; //pulse width of echo signal to be saved for distance calculation
 #include <msp430g2553.h>
 
 int main(void){
@@ -104,5 +99,6 @@ __interrupt void capture(void){
 		P1OUT &= ~BIT6;
 	}
 	TA0CTL = MC_0;
-	TA0CCTL1 &= CCIFG;
+	TA0CCTL1 &= ~CCIFG;
+	TA0CCTL1 &= ~COV;
 }
