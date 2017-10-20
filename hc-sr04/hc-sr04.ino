@@ -6,7 +6,7 @@
 //Distance of an object from the sensor can be calculated using the pulse width recorded by the capture.
 
 #include <msp430g2553.h>
-
+unsigned int echo;
 int main(void){
 	WDTCTL = WDTPW + WDTHOLD; //stop wdt
 
